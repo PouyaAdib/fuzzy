@@ -10,9 +10,9 @@
   },
    "scripts": {
     "test": "mocha \"test/**/*.coffee\"",
-    "test:watch": "mocha \"test/**/*.coffee\" --watch",
+    "test:watch": "mocha \"test/**/*.coffee\" --compilers coffee:coffee-script/register --watch",
     "compile": "coffee --bare --compile --output ./lib ./src",
     "compile:watch": "jitter src lib -b",
-    "watch": "npm run compile:watch & npm run test:watch",
-  },
+    "watch": "npm run compile:watch & npm run test:watch"
+  }
 }
