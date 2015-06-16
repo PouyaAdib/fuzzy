@@ -1,37 +1,50 @@
+sorter = require './sorter'
+scorer = require './scorer'
 matcher = require './matcher'
+patternDistance = require './patternDistance'
 
 module.exports = class Fuzzy
 	constructor: ->
 		@_items = [[]]
 		@_currentPattern = ''
-
 		@
 
 	addItem: (item) ->
-		@_items[0].push {text: item, score: 0, startPosition: 0}
-		
+		@_items[0].push {text: item, score: 0, startPosition: 0}		
 		return
 
 	filter: (newPattern) ->
-		if newPattern is ''
-			@_clearSearch()
-			return []
+		distance = patternDistance.calculate @_currentPattern, newPattern
+		@_currentPattern = newPattern
 
-		l = newPattern.length
-		if newPattern > @_currentPattern
-			pattern = newPattern.slice @_currentPattern.length, l
-			for p in pattern
-				strings = @_items[@_items.length - 1]
-				result = @_items[@_items.length] = []
-				for entry in strings
-					if matcher.match(p, entry.text) then result.push entry
-		
-		output = []
-		output.push r.text for r in result
-		output
+		@_popInvalidResults distance[0]
+		@_pushNewResults distance[1]
+		@_outputResult()
 
-	_clearSearch: ->
-		@_items.length = 1
-		@_currentPattern = ''
+	_popInvalidResults: (deletions) ->
+		l = deletions.length
+		if l is 0 then return
+		until l-- is 0 then @_items.pop()
 		return
 
+	_pushNewResults: (insertions) ->
+		l = insertions.length
+		if l is 0 then return
+		i = -1
+		until ++i is l
+			itemsLength = @_items.length
+			strings = @_items[itemsLength - 1]
+			result = @_items[itemsLength] = []
+			for entry in strings
+				match = matcher.match(insertions[i], entry.text, entry.startPosition)
+				if match
+					score = scorer.score match - 1, entry.startPosition - 1
+					result.push {text: entry.text, score: score, startPosition: match}
+		sorter.sort result
+		return
+
+	_outputResult: ->
+		output = []
+		result = @_items[@_items.length - 1]
+		output.push r.text for r in result
+		output
