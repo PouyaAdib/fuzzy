@@ -43,7 +43,7 @@ module.exports = class Fuzzy
 				res = matcher.match(char, entry.text, entry.startPosition)
 				if res.isMatch
 					score = scorer.score res.charCode, res.pos - 1, entry.startPosition - 1
-					result.push {text: entry.text, score: score, startPosition: res.pos}
+					result.push {text: entry.text, score: entry.score + score, startPosition: res.pos}
 		@_results.push sorter.sort result
 		return
 
