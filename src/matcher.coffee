@@ -1,7 +1,7 @@
 module.exports = matcher =
 	match: (pattern, string, startPosition) ->
 		j = startPosition
-		patternCharCode = pattern.charCodeAt '0'
+		patternCharCode = pattern.toLowerCase().charCodeAt '0'
 		strlen = string.length
 		while j < strlen
 			strLowerChar = strChar = string.charCodeAt(j++)
