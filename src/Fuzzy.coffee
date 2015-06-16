@@ -6,6 +6,7 @@ patternDistance = require './patternDistance'
 module.exports = class Fuzzy
 	constructor: ->
 		@_items = [[]]
+		@_results =[[]]
 		@_currentPattern = ''
 		@
 
@@ -24,7 +25,9 @@ module.exports = class Fuzzy
 	_popInvalidResults: (deletions) ->
 		l = deletions.length
 		if l is 0 then return
-		until l-- is 0 then @_items.pop()
+		until l-- is 0
+			@_items.pop()
+			@_results.pop()
 		return
 
 	_pushNewResults: (insertions) ->
@@ -35,16 +38,14 @@ module.exports = class Fuzzy
 			itemsLength = @_items.length
 			strings = @_items[itemsLength - 1]
 			result = @_items[itemsLength] = []
+			char = insertions[i]
 			for entry in strings
-				match = matcher.match(insertions[i], entry.text, entry.startPosition)
-				if match
-					score = scorer.score match - 1, entry.startPosition - 1
-					result.push {text: entry.text, score: score, startPosition: match}
-		sorter.sort result
+				res = matcher.match(char, entry.text, entry.startPosition)
+				if res.isMatch
+					score = scorer.score res.charCode, res.pos - 1, entry.startPosition - 1
+					result.push {text: entry.text, score: score, startPosition: res.pos}
+		@_results.push sorter.sort result
 		return
 
 	_outputResult: ->
-		output = []
-		result = @_items[@_items.length - 1]
-		output.push r.text for r in result
-		output
+		@_results[@_results.length - 1]

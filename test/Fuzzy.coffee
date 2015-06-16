@@ -2,55 +2,67 @@ assert = require 'assert'
 Fuzzy = require '../src/Fuzzy'
 patternDistance = require "../src/patternDistance"
 
-fuzzy = new Fuzzy
-# strings = ['black', 'blake', 'blank']
-strings = ['abcd', 'acdb', 'adbc', 'eabc']
-fuzzy.addItem str for str in strings
-
 describe 'Fuzzy', ->
 	describe 'sorter', ->
+		fuzzy = new Fuzzy
+		strings = ['abcd', 'acdb', 'adbc', 'eabc']
+		fuzzy.addItem str for str in strings
+		
 		it 'ad', ->
 			res = fuzzy.filter 'ad'
 			assert.deepEqual res, ['adbc', 'acdb', 'abcd']
 
-# 	describe 'matcher', ->
-# 		it 'pattern:b', ->
-# 			res = fuzzy.filter 'b'
-# 			assert.deepEqual res, ['black', 'blake', 'blank']
+	describe 'scorer', ->
+		fuzzy = new Fuzzy
+		strings = ['black', 'bulk', 'Banana', 'Buzz Aldrin']
+		fuzzy.addItem str for str in strings
 
-# 		it 'pattern:bc', ->
-# 			res = fuzzy.filter 'bc'
-# 			assert.deepEqual res, ['black']
+		it 'pattern: ba', ->
+			res = fuzzy.filter 'ba'
+			assert.deepEqual res, ['Buzz Aldrin', 'Banana', 'black']
 
-		# it 'pattern:\'\'', ->
-		# 	res = fuzzy.filter ''
-		# 	assert.deepEqual res, []
+	describe 'matcher', ->
+		fuzzy = new Fuzzy
+		strings = ['black', 'blake', 'blank']
+		fuzzy.addItem str for str in strings
+		
+		it 'pattern:b', ->
+			res = fuzzy.filter 'b'
+			assert.deepEqual res, ['black', 'blake', 'blank']
 
-		# it 'pattern:ke', ->
-		# 	res = fuzzy.filter 'ke'
-		# 	assert.deepEqual res, ['blake']
+		it 'pattern:bc', ->
+			res = fuzzy.filter 'bc'
+			assert.deepEqual res, ['black']
 
-		# it 'pattern:black', ->
-		# 	res = fuzzy.filter 'black'
-		# 	assert.deepEqual res, ['black']
+		it 'pattern:\'\'', ->
+			res = fuzzy.filter ''
+			assert.deepEqual res, []
 
-# describe 'Pattern Distance', ->
-# 	it '(abcd, ab) -> ([c, d], [])', ->
-# 		dist = patternDistance.calculate 'abcd', 'ab'
-# 		assert.deepEqual dist, [['c', 'd'], []]
+		it 'pattern:ke', ->
+			res = fuzzy.filter 'ke'
+			assert.deepEqual res, ['blake']
 
-# 	it '(abcd, abcd) -> ([], [])', ->
-# 		dist = patternDistance.calculate 'abcd', 'abcd'
-# 		assert.deepEqual dist, [[], []]
+		it 'pattern:black', ->
+			res = fuzzy.filter 'black'
+			assert.deepEqual res, ['black']
 
-# 	it '(abcd, abfg) -> ([c, d], [f, g])', ->
-# 		dist = patternDistance.calculate 'abcd', 'abfg'
-# 		assert.deepEqual dist, [['c', 'd'], ['f', 'g']]
+describe 'Pattern Distance', ->
+	it '(abcd, ab) -> ([c, d], [])', ->
+		dist = patternDistance.calculate 'abcd', 'ab'
+		assert.deepEqual dist, [['c', 'd'], []]
 
-# 	it '(abcd, abcde) -> ([], [e])', ->
-# 		dist = patternDistance.calculate 'abcd', 'abcde'
-# 		assert.deepEqual dist, [[], ['e']]
+	it '(abcd, abcd) -> ([], [])', ->
+		dist = patternDistance.calculate 'abcd', 'abcd'
+		assert.deepEqual dist, [[], []]
 
-# it '(ke, black) -> ([k, e], [b, l, a, c, k])', ->
-# 	dist = patternDistance.calculate 'ke', 'black'
-# 	assert.deepEqual dist, [['k', 'e'], ['b', 'l', 'a', 'c', 'k']]
+	it '(abcd, abfg) -> ([c, d], [f, g])', ->
+		dist = patternDistance.calculate 'abcd', 'abfg'
+		assert.deepEqual dist, [['c', 'd'], ['f', 'g']]
+
+	it '(abcd, abcde) -> ([], [e])', ->
+		dist = patternDistance.calculate 'abcd', 'abcde'
+		assert.deepEqual dist, [[], ['e']]
+
+	it '(ke, black) -> ([k, e], [b, l, a, c, k])', ->
+		dist = patternDistance.calculate 'ke', 'black'
+		assert.deepEqual dist, [['k', 'e'], ['b', 'l', 'a', 'c', 'k']]

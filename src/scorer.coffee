@@ -1,4 +1,11 @@
 module.exports = scorer = 
-	score: (matchPos, previousCharPos) ->
-		if previousCharPos is -1 then return 0
-		matchPos - previousCharPos
+	score: (char, matchPos, previousCharPos) ->
+		score = 20
+		if @isUpper char
+			score -= 1
+		else
+			if previousCharPos isnt -1 then score += matchPos - previousCharPos
+		score
+
+	isUpper: (charCode) ->
+		charCode > 64 and charCode < 91

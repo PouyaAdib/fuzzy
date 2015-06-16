@@ -4,12 +4,12 @@ module.exports = matcher =
 		patternCharCode = pattern.charCodeAt '0'
 		strlen = string.length
 		while j < strlen
-			strChar = string.charCodeAt(j++)
-			if @isUpper strChar then strChar += 32
+			strLowerChar = strChar = string.charCodeAt(j++)
+			if @isUpper strChar then strLowerChar = strChar + 32
 
-			if strChar is patternCharCode then return j
-		
-		return false
+			if strLowerChar is patternCharCode then return {isMatch: yes, pos: j, charCode: strChar}
+
+		return {isMatch: no}
 
 	isUpper: (charCode) ->
 		charCode > 64 and charCode < 91
