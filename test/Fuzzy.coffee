@@ -19,11 +19,11 @@ describe 'Fuzzy', ->
 
 		it 'pattern: ba', ->
 			res = fuzzy.filter 'ba'
-			assert.deepEqual res, ['Buzz Aldrin', 'Banana', 'black']
+			assert.deepEqual res, ['Banana', 'black', 'Buzz Aldrin']
 
 		it 'pattern: BA', ->
 			res = fuzzy.filter 'BA'
-			assert.deepEqual res, ['Buzz Aldrin', 'Banana', 'black']
+			assert.deepEqual res, ['Banana', 'black', 'Buzz Aldrin']
 
 	describe 'matcher', ->
 		fuzzy = new Fuzzy
