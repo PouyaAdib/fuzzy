@@ -1,5 +1,4 @@
 sorter = require './sorter'
-scorer = require './scorer'
 matcher = require './matcher'
 patternDistance = require './patternDistance'
 
@@ -8,10 +7,12 @@ module.exports = class Fuzzy
 		@_items = [[]]
 		@_results =[[]]
 		@_currentPattern = ''
+		
 		@
 
 	addItem: (item) ->
 		@_items[0].push {text: item, score: 0, startPosition: 0}		
+		
 		return
 
 	filter: (newPattern) ->
@@ -28,6 +29,7 @@ module.exports = class Fuzzy
 		until l-- is 0
 			@_items.pop()
 			@_results.pop()
+		
 		return
 
 	_pushNewResults: (insertions) ->
@@ -39,12 +41,14 @@ module.exports = class Fuzzy
 			strings = @_items[itemsLength - 1]
 			result = @_items[itemsLength] = []
 			char = insertions[i]
+			
 			for entry in strings
 				res = matcher.match(char, entry.text, entry.startPosition)
-				if res.isMatch
-					score = scorer.score res.charCode, res.pos - 1, entry.startPosition - 1
-					result.push {text: entry.text, score: entry.score + score, startPosition: res.pos}
+				if res isnt -1 
+					result.push {text: entry.text, score: entry.score + res.score, startPosition: res.pos}
+		
 		@_results.push sorter.sort result
+		
 		return
 
 	_outputResult: ->

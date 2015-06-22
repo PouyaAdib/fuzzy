@@ -1,7 +1,3 @@
-module.exports = scorer = 
-	score: (char, matchPos, previousCharPos) ->
+module.exports = scorer =
+	score: (matchPos, previousCharPos) ->
 		score = matchPos - previousCharPos
-		score
-
-	isUpper: (charCode) ->
-		charCode > 64 and charCode < 91
