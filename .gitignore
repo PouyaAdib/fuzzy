@@ -4,6 +4,7 @@ pg
 
 .git
 npm-debug.log
+npm-debug.log.*
 !*.gitkeep
 
 xeno
