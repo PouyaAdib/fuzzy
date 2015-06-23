@@ -3,6 +3,7 @@
   "version:": "0.1.0",
   "description": "Fuzzy search component",
   "author": "Pouya Adib <pouya.adn@gmail.com>",
+  "main": "lib/Fuzzy.js",
   "devDependencies": {
     "coffee-script": "^1.9.3",
     "jitter": "^1.3.0",
